@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
     }
     res.status(200).json({
       id: userId,
-      email: userData.usemame
+      username: userData.username
 
 
     });
