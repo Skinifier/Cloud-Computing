@@ -30,19 +30,21 @@ const loginUser = async (req, res) => {
     const userQuerySnapshot = await db.collection('user').where('email', '==', email).limit(1).get();
     if (userQuerySnapshot.empty) {
       return res.status(401).json({
-        message: "Invalid email or password",
+        message: "Invalid email",
       });
     }
-
-    // Assuming user data is stored in Firestore
     const userData = userQuerySnapshot.docs[0].data();
-
-    // Here you can perform password validation or other authentication checks
-    // For simplicity, let's assume password validation succeeds
+    const userId = userQuerySnapshot.docs[0].id;
+    if (userData.password != password) {
+      return res.status(401).json({
+        message: "Invalid password",
+      });
+    }
     res.status(200).json({
-      id: userData.id,
-      email: userData.email,
-      // Add more user data if needed
+      id: userId,
+      email: userData.usemame
+
+
     });
   } catch (error) {
     console.error("Error logging in:", error);
