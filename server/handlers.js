@@ -1,9 +1,7 @@
-// Handlers.js
-
 const admin = require("firebase-admin");
 const db = admin.firestore();
 
-//USERS
+// USERS
 const getUsers = async (req, res) => {
   try {
     const snapshot = await db.collection('user').get();
@@ -24,7 +22,37 @@ const registerUser = async (req, res) => {
   }
 };
 
-//BARANG
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Query Firestore for user based on email
+    const userQuerySnapshot = await db.collection('user').where('email', '==', email).limit(1).get();
+    if (userQuerySnapshot.empty) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    // Assuming user data is stored in Firestore
+    const userData = userQuerySnapshot.docs[0].data();
+
+    // Here you can perform password validation or other authentication checks
+    // For simplicity, let's assume password validation succeeds
+    res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      // Add more user data if needed
+    });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({
+      message: "Failed to login",
+    });
+  }
+};
+
+// BARANG
 const getBarang = async (req, res) => {
   try {
     const snapshot = await db.collection('barang').get();
@@ -77,5 +105,6 @@ module.exports = {
   getUsers,
   registerUser,
   getBarang,
-  addBarang
+  addBarang,
+  loginUser
 };
