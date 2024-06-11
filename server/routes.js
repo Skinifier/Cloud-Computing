@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers, registerUser, loginUser, addBarang, getBarang } = require('./handlers.js');
+const { getUsers, registerUser, loginUser, addBarang, getBarang, addWishlist, getWishlist } = require('./handlers.js');
 
 const router = express.Router();
 
@@ -11,5 +11,9 @@ router.post('/login', loginUser); // New login route
 // Barang
 router.get('/barang', getBarang);
 router.post('/barang', addBarang);
+
+// Wishlist
+router.post('/wishlist', addWishlist);
+router.get('/wishlist/:id', getWishlist);
 
 module.exports = router;
