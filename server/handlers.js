@@ -103,10 +103,80 @@ const addBarang = async (req, res) => {
   }
 };
 
+// WISHLIST
+const addWishlist = async (req, res) => {
+  try {
+    const { id_user, id_barang, jumlah_barang } = req.body;
+
+    // Validate request body
+    if (!id_user || !id_barang || !jumlah_barang) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const user = await db.collection("user").doc(id_user).get();
+    if (!user.exists) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const barang = await db.collection("barang").doc(id_barang).get();
+    if (!barang.exists) {
+      return res.status(404).json({ error: "Barang not found" });
+    }
+
+    const wishlistQuerySnapshot = await db
+      .collection("wishlist")
+      .where("id_user", "==", id_user)
+      .where("id_barang", "==", id_barang)
+      .get();
+
+    if (!wishlistQuerySnapshot.empty) {
+      return res
+        .status(400)
+        .json({ error: "Item already exists in the wishlist" });
+    }
+
+    const newWishlist = {
+      id_user,
+      id_barang,
+      jumlah_barang,
+    };
+
+    await db.collection("wishlist").add(newWishlist);
+    return res.status(201).json({ message: "Wishlist added successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getWishlist = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const wishlistQuerySnapshot = await db
+      .collection("wishlist")
+      .where("id_user", "==", id)
+      .get();
+
+    const wishlistData = wishlistQuerySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return res.status(200).json(wishlistData);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getUsers,
   registerUser,
   getBarang,
   addBarang,
-  loginUser
+  loginUser,
+  addWishlist,
+  getWishlist
 };
