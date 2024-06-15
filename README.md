@@ -99,9 +99,9 @@ Description: Add new wishlist item.
 Headers:
 Authorization: Bearer <token>
 Request Body:
-{
+`{
   "barangId": "string"
-}
+}`
 
 ### Get Wishlist
 URL: /wishlist
