@@ -6,21 +6,24 @@ URL: /register
 Method: POST
 Description: Register a new user.
 Request Body:
-{
-  "username": "string",
-  "password": "string",
-  "email": "string"
-}
+`{
+    "email": "string",
+    "username": "string",
+    "fullname": "string",
+    "no_hp": "string",
+    "skin_type": "string",
+    "password": "string"
+}`
 
 ### Login User
 URL: /login
 Method: POST
 Description: Login a user.
 Request Body:
-{
+`{
   "email": "string",
   "password": "string"
-}
+}`
 
 ### Get User Profile
 URL: /users
